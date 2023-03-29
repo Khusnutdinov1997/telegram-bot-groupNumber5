@@ -4,6 +4,6 @@ import org.springframework.stereotype.Repository;
 import pro.sky.telegrambot.model.BranchParams;
 
 @Repository
-public interface BranchParamsRepository extends JpaRepository<BranchParams, Integer> {
+public interface BranchParamsRepository extends JpaRepository<BranchParams, Long> {
 
 }

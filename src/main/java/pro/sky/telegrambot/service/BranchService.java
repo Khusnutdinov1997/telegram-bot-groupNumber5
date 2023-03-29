@@ -16,6 +16,7 @@ public class BranchService {
     }
 
     public BranchParams createBranch(BranchParams branchParams) {
+        branchParams.setId(null);
         return branchParamsRepository.save(branchParams);
     }
 
@@ -26,7 +27,7 @@ public class BranchService {
         return branchParamsRepository.save(branchParams);
     }
 
-    public BranchParams findBranchById(Integer id) {
+    public BranchParams findBranchById(long id) {
         BranchParams branchParams = branchParamsRepository.findById(id).orElse(null);
         if (branchParams == null) {
             throw new BranchNotFoundException(id);

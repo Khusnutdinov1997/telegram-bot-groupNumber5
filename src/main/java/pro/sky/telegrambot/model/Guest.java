@@ -1,26 +1,25 @@
 package pro.sky.telegrambot.model;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
+@Table(name = "guest")
 public class Guest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String telegramId;
-    private Timestamp lastVisit;
+    @Column(name = "chat_id")
+    private long chatId;
+     private Timestamp lastVisit;
     private int lastMenu;
 
     public Guest() {
     }
 
-    public Guest( String telegramId, Timestamp lastVisit, int lastMenu) {
-        this.telegramId = telegramId;
+    public Guest(long chatId, Timestamp lastVisit, int lastMenu) {
+        this.chatId = chatId;
         this.lastVisit = lastVisit;
         this.lastMenu = lastMenu;
     }
@@ -33,12 +32,12 @@ public class Guest {
         this.id = id;
     }
 
-    public String getTelegramId() {
-        return telegramId;
+    public long getChatId() {
+        return chatId;
     }
 
-    public void setTelegramId(String telegramId) {
-        this.telegramId = telegramId;
+    public void setChatId(long chatId) {
+        this.chatId = chatId;
     }
 
     public Timestamp getLastVisit() {

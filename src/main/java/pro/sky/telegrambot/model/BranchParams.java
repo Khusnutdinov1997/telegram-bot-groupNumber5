@@ -1,14 +1,7 @@
 package pro.sky.telegrambot.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
@@ -17,7 +10,7 @@ import java.util.Objects;
 public class BranchParams {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     private String name;
     private String country;
@@ -27,20 +20,22 @@ public class BranchParams {
     private String workHours;
     private byte[] map;
     private String info;
-    private int probPeriod;
-    private int probExtend;
 
-    public BranchParams(int branch, String name) {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public BranchParams(Long branch, String name) {
         this.id = branch;
         this.name = name;
     }
 
     public BranchParams() {
 
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getName() {
@@ -75,14 +70,6 @@ public class BranchParams {
         return info;
     }
 
-    public int getProbPeriod() {
-        return probPeriod;
-    }
-
-    public int getProbExtend() {
-        return probExtend;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -96,4 +83,36 @@ public class BranchParams {
         return Objects.hash(id);
     }
 
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setZip(String zip) {
+        this.zip = zip;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setWorkHours(String workHours) {
+        this.workHours = workHours;
+    }
+
+    public void setMap(byte[] map) {
+        this.map = map;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
 }

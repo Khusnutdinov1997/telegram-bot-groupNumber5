@@ -1,8 +1,5 @@
 package pro.sky.telegrambot.model;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import java.util.Objects;
 
@@ -19,20 +16,22 @@ public class Adopter {
     private int age;
     private String phone1;
     private String email;
-    private String telegram;
+    @Column(name = "chat_id")
+    private long chatId;
+
     private int volunteerId;
     private boolean onProbation;
     private boolean active;
 
 
-    public Adopter(String firstName, String lastName, String passport, int age, String phone1, String email, String telegram, int volunteerId, boolean onProbation, boolean active) {
+    public Adopter(String firstName, String lastName, String passport, int age, String phone1, String email, long chatId, int volunteerId, boolean onProbation, boolean active) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.passport = passport;
         this.age = age;
         this.phone1 = phone1;
         this.email = email;
-        this.telegram = telegram;
+        this.chatId = chatId;
         this.volunteerId = volunteerId;
         this.onProbation = onProbation;
         this.active = active;
@@ -97,12 +96,12 @@ public class Adopter {
         this.email = email;
     }
 
-    public String getTelegram() {
-        return telegram;
+    public long getChatId() {
+        return chatId;
     }
 
-    public void setTelegram(String telegram) {
-        this.telegram = telegram;
+    public void setChatId(long chatId) {
+        this.chatId = chatId;
     }
 
     public int getVolunteerId() {

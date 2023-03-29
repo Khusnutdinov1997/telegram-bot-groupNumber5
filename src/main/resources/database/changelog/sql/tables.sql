@@ -5,7 +5,7 @@
 CREATE TABLE IF NOT EXISTS guest
 (
     id		BIGSERIAL PRIMARY KEY,
-    telegram_id	VARCHAR,
+    chat_id	BIGINT,
     last_visit 	TIMESTAMP,
     last_menu	INT
 );
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS adopter
     age INT,
     phone1 VARCHAR,
     email VARCHAR,
-    telegram VARCHAR,
+    chat_id BIGINT,
     volunteer_id INT,
     on_probation BOOL,
     active BOOL
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS pet_report
 
 CREATE TABLE IF NOT EXISTS branch_params
 (
-    id INT PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     name VARCHAR,
     country VARCHAR,
     city VARCHAR,
@@ -63,9 +63,7 @@ CREATE TABLE IF NOT EXISTS branch_params
     address VARCHAR,
     work_hours VARCHAR,
     map BYTEA,
-    info TEXT,
-    prob_period INT,
-    prob_extend INT
+    info TEXT
 );
 
 CREATE TABLE IF NOT EXISTS pet
@@ -74,8 +72,30 @@ CREATE TABLE IF NOT EXISTS pet
     nick_name   VARCHAR,
     pet_type    INT,
     pet_color   INT,
-    photo       BYTEA,
+    pet_avatar_id BIGINT,
     adopter_id	BIGINT
 
-)
+);
 
+CREATE TABLE service_level2 (
+                              branch_id BIGSERIAL,
+                              meet_pet TEXT,
+                              adoption_docs TEXT,
+                              transport_pet TEXT,
+                              house_puppy TEXT,
+                              house_big_dog TEXT,
+                              house_handicapped TEXT,
+                              advice_specialist TEXT,
+                              contacts_specialist TEXT,
+                              refusal_reasons TEXT
+);
+
+CREATE TABLE IF NOT EXISTS pet_avatar
+(
+    id          BIGSERIAL PRIMARY KEY,
+    file_path   TEXT,
+    file_size    BIGINT,
+    media_type   TEXT,
+    data BYTEA
+
+);

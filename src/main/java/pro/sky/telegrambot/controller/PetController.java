@@ -7,9 +7,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.model.Pet;
 import pro.sky.telegrambot.service.PetService;
+
+import java.util.Collection;
 
 @RestController
 @RequestMapping("group5_petbot/pet")
@@ -48,7 +52,6 @@ public class PetController {
     public Pet getPet(@PathVariable @Parameter(description = "id питомца", example = "1") Long id) {
         return petService.findPet(id);
     }
-
 
 
     @Operation(
@@ -101,6 +104,18 @@ public class PetController {
     @PutMapping
     public Pet editPet(@RequestBody Pet pet) {
         return petService.editPet(pet);
+    }
+
+    @GetMapping
+    public ResponseEntity<Collection<Pet>> printAllVacantPets() {
+        return petService.getAllVacantPets();
+    }
+
+    @PatchMapping
+
+    public Pet patchPetAvatar(@PathVariable @Parameter(description = "id питомца", example = "1") Long id,
+                                      @RequestParam("petAvatarId") long petAvatarId) {
+        return petService.patchPetAvatar(id,petAvatarId);
     }
 
 }
