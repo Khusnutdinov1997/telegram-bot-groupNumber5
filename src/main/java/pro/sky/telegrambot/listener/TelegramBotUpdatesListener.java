@@ -3,7 +3,6 @@ package pro.sky.telegrambot.listener;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.CallbackQuery;
-import com.pengrad.telegrambot.model.File;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
@@ -14,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import pro.sky.telegrambot.model.Guest;
 import pro.sky.telegrambot.repository.AdopterRepository;
 import pro.sky.telegrambot.repository.GuestRepository;
@@ -24,12 +22,9 @@ import pro.sky.telegrambot.service.BranchService;
 import pro.sky.telegrambot.service.PetAvatarService;
 
 import javax.annotation.PostConstruct;
-import java.io.FileNotFoundException;
-import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.util.List;
 
-import static org.springframework.util.ResourceUtils.*;
 import static pro.sky.telegrambot.constants.Constants.*;
 
 @Service
@@ -116,12 +111,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         }
     }
 
-    private void sendMessageOnIconClick(long chatId, String message) {
-        sendMessage(new SendMessage(chatId, message));
+    private void sendPhotoOnIconClick(long chatId, byte[] sendPhoto) {
+        sendPhoto(new SendPhoto(chatId, sendPhoto));
     }
 
-    private void sendPhotoOnIconClick(long chatId, String sendPhoto) {
-        sendPhoto(new SendPhoto(chatId, sendPhoto));
+    private void sendMessageOnIconClick(long chatId, String message) {
+        sendMessage(new SendMessage(chatId, message));
     }
 
 
@@ -152,7 +147,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 // отработка нажатий кнопок по запросу информации о приюте - Этап 2
                 case ICON_PETS_SELECT_DOG -> catDogSelect(chatId);
                 //case CLICKED_ICON_PETS_SELECT_DOG -> sendMessageOnIconClick(chatId, CLICKED_ICON_PETS_SELECT_DOG + ICON_DOG);
-                case CLICKED_ICON_PETS_SELECT_DOG -> sendPhotoOnIconClick(chatId, "//localhost:8080/group5_petbot/params/4/avatar");
+                case CLICKED_ICON_PETS_SELECT_DOG -> {
+                    sendMessageOnIconClick(chatId, CLICKED_ICON_PETS_SELECT_DOG + ICON_DOG);
+                    sendPhotoOnIconClick(chatId, petAvatarService.findPetAvatar(4).getData());
+                }
                 case CLICKED_ICON_PETS_SELECT_CAT -> sendMessageOnIconClick(chatId, CLICKED_ICON_PETS_SELECT_CAT+ ICON_CAT);
                 case CLICKED_ICON_PETS_GET_TO_KNOW_RULES -> sendMessageOnIconClick(chatId,CLICKED_ICON_PETS_GET_TO_KNOW_RULES + ": " + serviceTableRepository.getMeetPetRules());
                 case CLICKED_ICON_PETS_DOCS_SET -> sendMessageOnIconClick(chatId,CLICKED_ICON_PETS_DOCS_SET + ": " + serviceTableRepository.getAdoptionDocs());

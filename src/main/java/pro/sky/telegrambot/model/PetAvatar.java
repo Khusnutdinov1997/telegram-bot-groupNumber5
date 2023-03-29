@@ -14,6 +14,7 @@ public class PetAvatar {
     private String mediaType;
     private byte[] data;
 
+
     public Long getId() {
         return id;
     }

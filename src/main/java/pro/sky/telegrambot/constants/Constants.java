@@ -1,6 +1,6 @@
 package pro.sky.telegrambot.constants;
+
 import com.vdurmont.emoji.EmojiParser;
-import pro.sky.telegrambot.service.BranchService;
 
 
 public class Constants {
@@ -63,7 +63,7 @@ public class Constants {
     // Ответы на кнопки стадии 2:
     public final static String ACTION_STAGE2_ICON_CLICKED = "Правила и выбор питомца:";
 
-    public final static String CLICKED_ICON_PETS_SELECT_DOG = "Собаки есть, см разделы далее";
+    public final static String CLICKED_ICON_PETS_SELECT_DOG = "Вот такие есть собаки:";
     public final static String CLICKED_ICON_PETS_SELECT_CAT = "Кошек пока нет, только собаки";
     public final static String CLICKED_ICON_PETS_GET_TO_KNOW_RULES = "Как знакомиться с питомцем";
     public final static String CLICKED_ICON_PETS_DOCS_SET = "Список документов";
