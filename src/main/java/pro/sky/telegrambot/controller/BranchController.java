@@ -60,14 +60,8 @@ public class BranchController {
                             )
                     )
             },
-            tags = "Обработка бранчей",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Параметры нового бранча",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = BranchParams.class)
-                    )
-            )
+            tags = "Обработка бранчей"
+
     )
     @PutMapping
     public BranchParams editBranch(@RequestBody BranchParams branchParams) {
@@ -87,14 +81,8 @@ public class BranchController {
                     )
             },
 
-            tags = "Обработка бранчей",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Параметры нового бранча",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = BranchParams.class)
-                    )
-            )
+            tags = "Обработка бранчей"
+
     )
     @GetMapping("{id}")
     public BranchParams getBranchById(@Parameter(description = "id бранча", example = "1") @PathVariable Integer id) {

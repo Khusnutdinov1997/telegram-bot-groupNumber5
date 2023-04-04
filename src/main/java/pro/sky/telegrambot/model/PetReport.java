@@ -1,27 +1,36 @@
 package pro.sky.telegrambot.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
+@Table(name = "pet_report")
 public class PetReport {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-    private Long adopterId;
-    private LocalDateTime reportDate;
-    private Integer petId;
+    @ManyToOne
+    @JoinColumn(name = "adopter_id")
+    private Adopter adopterId;
+    private LocalDate reportDate;
     private byte[] photo;
     private String diet;
     private String lifeStatus;
     private String behavior;
 
     public PetReport() {
+    }
+
+    public PetReport(Adopter adopterId, LocalDate reportDate, byte[] photo, String diet, String lifeStatus, String behavior) {
+        this.adopterId = adopterId;
+        this.reportDate = reportDate;
+        this.photo = photo;
+        this.diet = diet;
+        this.lifeStatus = lifeStatus;
+        this.behavior = behavior;
+
     }
 
     public Long getId() {
@@ -32,28 +41,20 @@ public class PetReport {
         this.id = id;
     }
 
-    public Long getAdopterId() {
+    public Adopter getAdopterId() {
         return adopterId;
     }
 
-    public void setAdopterId(Long adopterId) {
+    public void setAdopterId(Adopter adopterId) {
         this.adopterId = adopterId;
     }
 
-    public LocalDateTime getReportDate() {
+    public LocalDate getReportDate() {
         return reportDate;
     }
 
-    public void setReportDate(LocalDateTime reportDate) {
+    public void setReportDate(LocalDate reportDate) {
         this.reportDate = reportDate;
-    }
-
-    public Integer getPetId() {
-        return petId;
-    }
-
-    public void setPetId(Integer petId) {
-        this.petId = petId;
     }
 
     public byte[] getPhoto() {
@@ -91,13 +92,14 @@ public class PetReport {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof PetReport)) return false;
-        PetReport petReport = (PetReport) o;
-        return getAdopterId().equals(petReport.getAdopterId());
+        if (o == null || getClass() != o.getClass()) return false;
+        PetReport that = (PetReport) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAdopterId());
+        return Objects.hash(id);
     }
+
 }

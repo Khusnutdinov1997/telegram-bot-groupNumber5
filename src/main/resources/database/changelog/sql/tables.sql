@@ -42,9 +42,8 @@ CREATE TABLE IF NOT EXISTS volunteer
 CREATE TABLE IF NOT EXISTS pet_report
 (
     id BIGSERIAL PRIMARY KEY,
-    adopter_id	BIGINT,
-    report_date TIMESTAMP,
-    pet_id INT,
+    adopter_id	BIGSERIAL,
+    report_date DATE,
     photo BYTEA,
     diet VARCHAR,
     life_status VARCHAR,
@@ -72,7 +71,7 @@ CREATE TABLE IF NOT EXISTS pet
     nick_name   VARCHAR,
     pet_type    INT,
     pet_color   INT,
-    pet_avatar_id BIGINT,
+    avatar_id BIGINT,
     adopter_id	BIGINT
 
 );
@@ -99,3 +98,4 @@ CREATE TABLE IF NOT EXISTS pet_avatar
     data BYTEA
 
 );
+

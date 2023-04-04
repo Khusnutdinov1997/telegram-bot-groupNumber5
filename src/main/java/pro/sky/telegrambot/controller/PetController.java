@@ -9,11 +9,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.model.Pet;
 import pro.sky.telegrambot.service.PetService;
 
-import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("group5_petbot/pet")
@@ -39,14 +38,8 @@ public class PetController {
                             )
                     )
             },
-            tags = "Работа с питомцами",
-            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Параметры питомца",
-                    content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = Pet.class)
-                    )
-            )
+            tags = "Работа с питомцами"
+
     )
     @GetMapping("{id}")
     public Pet getPet(@PathVariable @Parameter(description = "id питомца", example = "1") Long id) {
@@ -106,12 +99,42 @@ public class PetController {
         return petService.editPet(pet);
     }
 
-    @GetMapping
-    public ResponseEntity<Collection<Pet>> printAllVacantPets() {
-        return petService.getAllVacantPets();
-    }
+        @Operation(
+                summary = "Все доступные к усыновлению питомцы",
+                responses = {
+                        @ApiResponse(
+                                responseCode = "200",
+                                description = "Выведен список питомецев",
+                                content = @Content(
+                                        mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                        schema = @Schema(implementation = Pet.class)
+                                )
+                        )
+                },
+                tags = "Работа с питомцами"
+        )
 
-    @PatchMapping
+        @GetMapping()
+        public ResponseEntity<List<Pet>> printAllVacantPets() {
+            return ResponseEntity.ok(petService.getAllVacantPets());
+        }
+
+    @Operation(
+            summary = "Добавление питомцу ID его аватарки",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Аватарка добавлена",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = Pet.class)
+                            )
+                    )
+            },
+            tags = "Работа с питомцами"
+
+    )
+    @PatchMapping()
 
     public Pet patchPetAvatar(@PathVariable @Parameter(description = "id питомца", example = "1") Long id,
                                       @RequestParam("petAvatarId") long petAvatarId) {

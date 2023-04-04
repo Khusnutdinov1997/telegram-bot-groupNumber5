@@ -8,38 +8,41 @@ import java.util.Objects;
 
 
 @Entity
-//@Table(name = "pet")
+@Table(name = "pet")
 
 public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
     private String nickName;
     private PetType petType;
     private PetColor petColor;
-    @OneToOne
-    private PetAvatar petAvatar;
+    private long avatarId;
     private long adopterId;
 
-
     public Pet() {
+
     }
 
-    public Pet(long id, String nickName, PetType petType, PetColor petColor,PetAvatar petAvatar,long adopterId) {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+    public Pet(Long id, String nickName, PetType petType, PetColor petColor,long avatarId,long adopterId) {
         this.id = id;
         this.nickName = nickName;
         this.petType = petType;
         this.petColor = petColor;
+        this.avatarId = avatarId;
         this.adopterId = adopterId;
         }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getNickName() {
         return nickName;
@@ -65,12 +68,12 @@ public class Pet {
         this.petColor = petColor;
     }
 
-    public PetAvatar getPetAvatar() {
-        return petAvatar;
+    public long getAvatarId() {
+        return avatarId;
     }
 
-    public void setPetAvatar(PetAvatar petAvatar) {
-        this.petAvatar = petAvatar;
+    public void setAvatarId(long avatarId) {
+        this.avatarId = avatarId;
     }
 
     public long getAdopterId() {
@@ -95,4 +98,14 @@ public class Pet {
         return Objects.hash(getId());
     }
 
+
+    @Override
+    public String toString() {
+        return "Pet{" +
+                "id=" + id +
+                ", nickName='" + nickName + '\'' +
+                ", petType=" + petType +
+                ", petColor=" + petColor +
+                '}';
+    }
 }

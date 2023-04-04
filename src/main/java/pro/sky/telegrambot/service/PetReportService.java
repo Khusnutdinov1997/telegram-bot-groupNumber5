@@ -1,4 +1,5 @@
 package pro.sky.telegrambot.service;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,6 @@ public class PetReportService {
         PetReport updatedPetReport = findPetReport(id);
         updatedPetReport.setAdopterId(petReport.getAdopterId());
         updatedPetReport.setReportDate(petReport.getReportDate());
-        updatedPetReport.setPetId(petReport.getPetId());
         updatedPetReport.setPhoto(petReport.getPhoto());
         updatedPetReport.setDiet(petReport.getDiet());
         updatedPetReport.setLifeStatus(petReport.getLifeStatus());

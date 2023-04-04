@@ -15,6 +15,19 @@ public class Constants {
     // Cообщения
     public final static String WELCOME_MESSAGE = "Привет! " + ICON_WAVE + " Это бот для бездомных животных. Чем можем помочь? " + ICON_SMILE;
     public final static String NO_VOLUNTEERS_AVAILABLE = "Свободных волонтеров нет. Пожалуйста попробуйте попозже";
+    public final static String SAVED_PHOTO_MESSAGE = "Фотография сохранена";
+    public final static String SAVED_DIET_MESSAGE = "Рацион сохранен";
+    public final static String SAVED_LIFE_STATUS_MESSAGE = "Самочувствие сохранено";
+    public final static String SAVED_BEHAVIOR_MESSAGE = "Поведение сохранено";
+    public final static String PET_REPORT_INSTRUCTION = "При нажатии кнопки \"Отправить отчет о питомце\" Вам необходимо будет направить четыре сообщениями (одно за другим) \n " +
+            "Первое сообщение - отправить фото питомца. \n" +
+            "Второе сообщение - рацион питомца. \n" +
+            "Третье сообщение - опишите самочувствие питомца. \n" +
+            "Четвертое сообщение - опишите поведение питомца, изменения отмеченные вами. \n \n " +
+            "После отправки этих 4-х сообщений отчет будет успешно сохранен о чем Вы получите соответствующее подтверждение\n";
+
+    public final static String LOAD_PHOTO_MESSAGE = "Пожалуйста, загрузите фотографию питомца";
+    public final static String PET_REPORT_EXIST = "Сегодняшний отчет уже есть в системе";
 
     // Текст кнопок
     // Стадия 1:
@@ -42,13 +55,12 @@ public class Constants {
     public final static String ICON_ADOPTER_DETAILS = "Данные усыновителя";
 
     // Стадия 3:
-    public final static String ICON_STAGE3_TEXT = "Отчет о питомце - инфо для усыновителей";
+    public final static String ICON_STAGE3_TEXT = "Ежедневный отчет о питомце";
     // Кнопки стадии 3:
-    public final static String ICON_PETS_PHOTO = "Фото животных";
-    public final static String ICON_PETS_FOOD = "Рацион животных";
-    public final static String ICON_PETS_WELLBEING = "Привыкание к месту";
-    public final static String ICON_PETS_BEHAVIOUR_CHANGE = "Изменение поведения";
-    public final static String ICON_PETS_REPORT_FORMAT = "Формат отчета о питомце";
+   public final static String ICON_PETS_REPORT_INSTRUCTIONS = "Инструкции к отчету о питомце";
+   public final static String ICON_PETS_REPORT_SEND = "Отправить отчет о питомце";
+
+    // Волонтер:
     public final static String ICON_VOLUNTEER_TEXT = "Позвать волонтера";
 
     //===========================================================================
@@ -59,6 +71,9 @@ public class Constants {
     public final static String CLICKED_ICON_SHELTER_CONTACT_DETAILS = "Информация о приюте:";
     public final static String CLICKED_ICON_SAFETY_SHELTER_RULES = "Правила приюта:";
     public final static String CLICKED_ICON_LEAVE_CONTACT_DETAILS = "Оставьте свои контактные данные";
+    public final static String BUTTON_SHARE_CONTACT_DETAILS = "Отправить контакты";
+
+
 
     // Ответы на кнопки стадии 2:
     public final static String ACTION_STAGE2_ICON_CLICKED = "Правила и выбор питомца:";
@@ -77,8 +92,10 @@ public class Constants {
     public final static String CLICKED_ICON_SELECT_PETS = "Выбрать собаку";
     public final static String CLICKED_ICON_ADOPTER_DETAILS = "Данные усыновителя";
 
-
-    public final static String ACTION_STAGE3_ICON_CLICKED = "Кнопку 3 нажали";
+    // Ответы на кнопки стадии 2:
+    public final static String ACTION_STAGE3_ICON_CLICKED = "Ежедневный отчет о питомце";
+    public final static String CLICKED_ICON_PETS_REPORT_SEND = "Кнопку 3 нажали";
+    public final static String ICON_PETS_REPORT_INSTRUCTIONS_CLICKED = "Инструкции к отчету";
     public final static String ACTION_VOLUNTEER_ICON_CLICKED = "Волонтера позвали";
 
 
