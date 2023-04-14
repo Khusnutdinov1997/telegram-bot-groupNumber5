@@ -12,9 +12,43 @@ public class Constants {
     public final static String ICON_CAT = EmojiParser.parseToUnicode(":cat:");
     public final static String ICON_BIRD = EmojiParser.parseToUnicode(":bird:");
 
+    public final static String EMAIL_PATTERN = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
+
+
+
     // Cообщения
     public final static String WELCOME_MESSAGE = "Привет! " + ICON_WAVE + " Это бот для бездомных животных. Чем можем помочь? " + ICON_SMILE;
     public final static String NO_VOLUNTEERS_AVAILABLE = "Свободных волонтеров нет. Пожалуйста попробуйте попозже";
+    public final static String ICON_BECOME_ADOPTER_INSTRUCTIONS = "Инструкции - стать усыновителем";
+    public final static String CLICKED_ICON_BECOME_ADOPTER_INSTRUCTIONS = "Инструкции усыновителя";
+
+    public final static String ICON_ENTER_ADOPTER_DETAILS = "Стать усыновителем";
+    public final static String CLICKED_ICON_ENTER_ADOPTER_DETAILS = "Кнопку нажали";
+
+    public final static String ADOPTER_SAVE_INSTRUCTION = "При нажатии кнопки \"Стать усыновителем\" Вам необходимо будет направить семь (7) сообщений (одно за другим) \n " +
+            "Первое сообщение - свое имя. \n" +
+            "Второе сообщение - свою фамилию. \n" +
+            "Третье сообщение - номер своего паспорта. \n" +
+            "Четвертое сообщение - свой возраст. \n" +
+            "Пятое сообщение - свой номер телефона. \n" +
+            "Шестое сообщение - свой е-мейл. \n" +
+            "Седьмое сообщение - номер выбранного Вами незанятого питомца. \n" +
+            "После отправки этих 7-ми сообщений ваша учетная запись будет создана, питомец закреплен за Вами \n" +
+            "- о чем Вы получите соответствующее подтверждение\n";
+    public final static String REQUEST_FIRST_NAME = "Пожалуйста, введите свое имя";
+    public final static String SAVED_FIRST_NAME = "Имя сохранено. Пожалуйста, введите свою фамилию";
+    public final static String SAVED_LAST_NAME = "Фамилия сохранена. Пожалуйста, введите номер своего паспорта";
+    public final static String SAVED_PASSPORT = "Паспорт сохранен. Пожалуйста, введите свой возраст";
+    public final static String SAVED_AGE = "Возраст сохранен. Пожалуйста, введите номер своего телефона";
+    public final static String SAVED_PHONE = "Номер телефона сохранен. Пожалуйста, введите свой е-мейл";
+    public final static String SAVED_EMAIL = "Е-мейл сохранен. Пожалуйста, введите Id (номер) выбранного питомца";
+    public final static String SUCCESSFUL_ADOPTER = "Забронировали за Вами питомца.\n" +
+            " Проверяем данные, вернемся с ответом. Ваша учетная запись и присвоенный номер следующий:\n";
+
+
+
+
+
     public final static String SAVED_PHOTO_MESSAGE = "Фотография сохранена";
     public final static String SAVED_DIET_MESSAGE = "Рацион сохранен";
     public final static String SAVED_LIFE_STATUS_MESSAGE = "Самочувствие сохранено";
@@ -42,6 +76,8 @@ public class Constants {
     public final static String ICON_STAGE2_TEXT = "Как взять питомца из приюта";
     // Кнопки стадии 2:
     public final static String ICON_PETS_SELECT_DOG = "Вас интересуют собаки или кошки?";
+
+    public final static String ICON_SELECT_DOG_AND_BECOME_ADOPTER = "Хотите стать усыновителем?";
     public final static String ICON_PETS_GET_TO_KNOW_RULES = "Знакомство с питомцем";
     public final static String ICON_PETS_DOCS_SET = "Документы по усыновлению";
     public final static String ICON_PETS_TRANSPORTATION_RULES = "Транспортировка питомца";
@@ -51,7 +87,7 @@ public class Constants {
     public final static String ICON_PETS_SPECIALIST_ADVICE = "Советы Кинолога";
     public final static String ICON_PETS_SPECIALIST_CONTACTS = "Контакты Кинологов";
     public final static String ICON_PETS_REFUSAL_REASONS = "Причины возможных отказов";
-    public final static String ICON_SELECT_PETS = "Выбрать собаку и стать усыновителем";
+
     public final static String ICON_ADOPTER_DETAILS = "Данные усыновителя";
 
     // Стадия 3:
@@ -73,12 +109,31 @@ public class Constants {
     public final static String CLICKED_ICON_LEAVE_CONTACT_DETAILS = "Оставьте свои контактные данные";
     public final static String BUTTON_SHARE_CONTACT_DETAILS = "Отправить контакты";
 
+    /*
+    public final static String BUTTON_SHARE_CONTACT_DETAILS_AND_BECOME_ADOPTER = "Дать контакты и стать усыновителем";
+
+    public final static String PROVIDE_PASSPORT = "Пожалуйста, введите номер Вашего паспорта в формате (серия номер) xxxx xxxxxx";
+    public final static String PASSPORT_OK = "Паспорт сохранен, пожалуйста, введите Ваш возраст";
+    public final static String WRONG_PASSPORT = "Некорректный формат паспорта - пожалуйста убедитесь, \n" +
+            "что вводите его в формате (серия номер) xxxx xxxxxx\n";
+    public final static String PROVIDE_EMAIL = "Ваш возраст записали. Пожалуйста, введите ваш е-мейл";
+    public final static String EMAIL_OK = "Е-мейл сохранили. Пожалуйста, введите номер (id) выбранного Вами питомца";
+     */
+    public final static String WRONG_EMAIL = "Некорректный формат электронной почты. \n" +
+            "Пожалуйста, убедитесь, что в предоставляемый Вами адрес соответствует формату xxxx@xxx.ru(.com или .org)\n";
+
+        public final static String WRONG_PET = "Что-то пошло не так. Или выбранный Вами питомец уже занят, или такого id питомца нет.\n" +
+            "Пожалуйста, убедитесь что Вы ввели id питомца в виде целого числа, без текста и знаков после запятой!\n";
+
+    public final static String ADOPTER_EXIST = "Вы уже сохранены как усыновитель в нашей базе данных.\n" +
+            " Брать второго питомца не разрешается. Ваш номер усыновителя, присвоенный Вам в прошлый раз, следующий:\n";
 
 
     // Ответы на кнопки стадии 2:
     public final static String ACTION_STAGE2_ICON_CLICKED = "Правила и выбор питомца:";
 
     public final static String CLICKED_ICON_PETS_SELECT_DOG = "Вот такие есть собаки:";
+    public final static String CLICKED_ICON_SELECT_DOG_AND_BECOME_ADOPTER = "Стать усыновителем";
     public final static String CLICKED_ICON_PETS_SELECT_CAT = "Кошек пока нет, только собаки";
     public final static String CLICKED_ICON_PETS_GET_TO_KNOW_RULES = "Как знакомиться с питомцем";
     public final static String CLICKED_ICON_PETS_DOCS_SET = "Список документов";
@@ -89,7 +144,7 @@ public class Constants {
     public final static String CLICKED_ICON_PETS_SPECIALIST_ADVICE = "Советы Кинолога";
     public final static String CLICKED_ICON_PETS_SPECIALIST_CONTACTS = "Контакты Кинологов";
     public final static String CLICKED_ICON_PETS_REFUSAL_REASONS = "Причины возможных отказов";
-    public final static String CLICKED_ICON_SELECT_PETS = "Выбрать собаку";
+
     public final static String CLICKED_ICON_ADOPTER_DETAILS = "Данные усыновителя";
 
     // Ответы на кнопки стадии 2:

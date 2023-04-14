@@ -1,5 +1,8 @@
 package pro.sky.telegrambot.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.exception.PetAvatarNotFoundException;
 import pro.sky.telegrambot.exception.PetNotFoundException;
@@ -19,6 +22,9 @@ public class PetService {
     private final PetRepository petRepository;
     private final PetAvatarRepository petAvatarRepository;
 
+    private final Logger logger = LoggerFactory.getLogger(PetService.class);
+
+    @Autowired
     public PetService(PetRepository petRepository, PetAvatarRepository petAvatarRepository) {
         this.petRepository = petRepository;
         this.petAvatarRepository = petAvatarRepository;
@@ -33,6 +39,7 @@ public class PetService {
     }
 
     public Pet createPet(Pet pet) {
+        logger.info("Calling method create pet");
         pet.setId(null);
         return petRepository.save(pet);
     }
@@ -45,6 +52,7 @@ public class PetService {
     }
 
     public List<Pet> getAllVacantPets() {
+        logger.info("Calling method get all vacant pets");
         List<Pet> petsList = petRepository.findVacantPet();
         if (petsList.isEmpty()) {
             return null;

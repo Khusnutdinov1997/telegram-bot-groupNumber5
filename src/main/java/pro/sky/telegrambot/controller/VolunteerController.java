@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import pro.sky.telegrambot.model.Pet;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.service.VolunteerService;
 
@@ -99,7 +98,7 @@ public class VolunteerController {
             )
     )
 
-    @PutMapping
+    @PutMapping("{id}")
     public Volunteer editVolunteer(@Parameter(description = "id волонтера", example = "1")@PathVariable Integer id) {
         return volunteerService.editVolunteer(id);
     }

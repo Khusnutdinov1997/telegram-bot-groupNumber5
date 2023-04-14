@@ -1,6 +1,6 @@
 package pro.sky.telegrambot.model;
-import javax.persistence.*;
 
+import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
@@ -18,13 +18,13 @@ public class Adopter {
     private String email;
     @Column(name = "chat_id")
     private long chatId;
-
-    private int volunteerId;
+    @OneToOne
+    private Pet pet;
     private boolean onProbation;
     private boolean active;
 
 
-    public Adopter(String firstName, String lastName, String passport, int age, String phone1, String email, long chatId, int volunteerId, boolean onProbation, boolean active) {
+    public Adopter(String firstName, String lastName, String passport, int age, String phone1, String email, long chatId, Pet pet, boolean onProbation, boolean active) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.passport = passport;
@@ -32,7 +32,7 @@ public class Adopter {
         this.phone1 = phone1;
         this.email = email;
         this.chatId = chatId;
-        this.volunteerId = volunteerId;
+        this.pet = pet;
         this.onProbation = onProbation;
         this.active = active;
     }
@@ -100,16 +100,31 @@ public class Adopter {
         return chatId;
     }
 
+    @Override
+    public String toString() {
+        return "Adopter{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", passport='" + passport + '\'' +
+                ", age=" + age +
+                ", phone1='" + phone1 + '\'' +
+                ", email='" + email + '\'' +
+                ", chatId=" + chatId +
+                ", pet=" + pet +
+                '}';
+    }
+
     public void setChatId(long chatId) {
         this.chatId = chatId;
     }
 
-    public int getVolunteerId() {
-        return volunteerId;
+    public Pet getPetId() {
+        return pet;
     }
 
-    public void setVolunteerId(int volunteerId) {
-        this.volunteerId = volunteerId;
+    public void setPetId(Pet petId) {
+        this.pet = petId;
     }
 
     public boolean isOnProbation() {

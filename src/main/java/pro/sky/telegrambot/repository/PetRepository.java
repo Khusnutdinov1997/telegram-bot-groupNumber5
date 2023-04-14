@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface PetRepository extends JpaRepository<Pet, Long> {
 
-    @Query(value = "select * from pet where adopter_id = 0 order by id",nativeQuery = true)
+   @Query(value = "select * from pet where adopter_Id = 0 order by id",nativeQuery = true)
     List<Pet> findVacantPet();
 
 }

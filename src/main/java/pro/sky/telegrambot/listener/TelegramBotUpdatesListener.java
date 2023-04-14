@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import pro.sky.telegrambot.constants.AdopterStatus;
 import pro.sky.telegrambot.constants.ReportStatus;
 import pro.sky.telegrambot.model.Adopter;
 import pro.sky.telegrambot.model.Guest;
@@ -30,10 +31,14 @@ import pro.sky.telegrambot.service.BranchService;
 import pro.sky.telegrambot.service.PetAvatarService;
 
 import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static pro.sky.telegrambot.constants.Constants.*;
 
@@ -42,6 +47,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
     private ReportStatus reportStatus = ReportStatus.DEFAULT;
+    private AdopterStatus adopterStatus = AdopterStatus.DEFAULT;
 
     public void setReportStatus(ReportStatus reportStatus) {
         this.reportStatus = reportStatus;
@@ -51,7 +57,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
 
 
-    @Autowired
+
     private TelegramBot telegramBot;
     private final VolunteerRepository volunteerRepository;
     private final AdopterRepository adopterRepository;
@@ -61,6 +67,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private final PetReportRepository petReportRepository;
     private final PetRepository petRepository;
 
+    @Autowired
     public TelegramBotUpdatesListener(TelegramBot telegramBot, VolunteerRepository volunteerRepository, AdopterRepository adopterRepository, GuestRepository guestRepository, ServiceTableRepository serviceTableRepository, PetReportRepository petReportRepository, PetRepository petRepository, BranchService branchService, PetAvatarService petAvatarService) {
         this.telegramBot = telegramBot;
         this.volunteerRepository = volunteerRepository;
@@ -88,7 +95,62 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
             if (update.message() != null) {
                 String incomeMsgText = update.message().text();
-                if (incomeMsgText == null) {
+
+                long chatId = update.message().chat().id();
+                if (incomeMsgText.equals("/start")) {
+                    SendMessage message = new SendMessage(chatId, WELCOME_MESSAGE);
+                    // запомнить гостя
+                    long g_id = update.message().chat().id();
+                    int lastMenu = update.updateId();
+                    Guest guest = guestRepository.findByChatId(g_id);
+                    if (guest == null) {
+                        guest = new Guest(g_id, new Timestamp(System.currentTimeMillis()), lastMenu);
+                        guestRepository.save(guest);
+                    }
+                    // Добавляем кнопки
+                    message.replyMarkup(createIconsStage0());
+                    sendMessage(message);
+                }
+
+                if (adopterStatus == AdopterStatus.WAITING_FOR_ADOPTER_FIRST_NAME) {
+                    saveAdopterFirstName(update);
+                    adopterStatus = AdopterStatus.WAITING_FOR_ADOPTER_LAST_NAME;
+                    return;
+                }
+
+                if (adopterStatus == AdopterStatus.WAITING_FOR_ADOPTER_LAST_NAME) {
+                    saveAdopterLastName(update);
+                    adopterStatus = AdopterStatus.WAITING_FOR_ADOPTER_PASSPORT;
+                    return;
+                }
+
+                if (adopterStatus == AdopterStatus.WAITING_FOR_ADOPTER_PASSPORT) {
+                    saveAdopterPassport(update);
+                    adopterStatus = AdopterStatus.WAITING_FOR_ADOPTER_AGE;
+                    return;
+                }
+
+                if (adopterStatus == AdopterStatus.WAITING_FOR_ADOPTER_AGE) {
+                    saveAdopterAge(update);
+                    adopterStatus = AdopterStatus.WAITING_FOR_ADOPTER_PHONE;
+                    return;
+                }
+
+                if (adopterStatus == AdopterStatus.WAITING_FOR_ADOPTER_PHONE) {
+                    saveAdopterPhone(update);
+                    adopterStatus = AdopterStatus.WAITING_FOR_ADOPTER_EMAIL;
+                    return;
+                }
+
+                if (adopterStatus == AdopterStatus.WAITING_FOR_ADOPTER_EMAIL) {
+                    saveAdopterEmail(update);
+                    adopterStatus = AdopterStatus.WAITING_FOR_ADOPTER_PET;
+                    return;
+                }
+
+                if (adopterStatus == AdopterStatus.WAITING_FOR_ADOPTER_PET) {
+                    saveAdopterPet(update);
+                    adopterStatus = AdopterStatus.DEFAULT;
                     return;
                 }
 
@@ -114,25 +176,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 }
 
                 if (update.message().text() == null) {
-                    // For stickers incomeMsgText is null
                     return;
                 }
 
-                long chatId = update.message().chat().id();
-                if (incomeMsgText.equals("/start")) {
-                    SendMessage message = new SendMessage(chatId, WELCOME_MESSAGE);
-                    // запомнить гостя
-                    long g_id = update.message().chat().id();
-                    int lastMenu = update.updateId();
-                    Guest guest = guestRepository.findByChatId(g_id);
-                    if (guest == null) {
-                        guest = new Guest(g_id, new Timestamp(System.currentTimeMillis()), lastMenu);
-                        guestRepository.save(guest);
-                    }
-                    // Добавляем кнопки
-                    message.replyMarkup(createIconsStage0());
-                    sendMessage(message);
-                }
+
             }
             // Нажатия кнопок
             else {
@@ -142,6 +189,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
+
+
 
     // Сервисные sendMessage
     private void sendMessage(SendMessage message) {
@@ -164,6 +213,113 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     private void sendMessageOnIconClick(long chatId, String message) {
         sendMessage(new SendMessage(chatId, message));
+    }
+
+    private void saveEmptyAdopter(long chatId) {
+        Adopter adopter = adopterRepository.findByChatId(chatId);
+
+            if (adopter == null) {
+            adopter = new Adopter(null, null, null, 0, null, null, chatId, null, false, true);
+            adopterRepository.save(adopter);
+            SendMessage requestFirstName = new SendMessage(chatId, REQUEST_FIRST_NAME);
+            sendMessage(requestFirstName);
+        }
+        if (adopter.getPetId() != null) {
+            SendMessage message = new SendMessage(chatId, ADOPTER_EXIST + " " + adopter.getId());
+            sendMessage(message);
+        }
+
+    }
+
+
+    private void saveAdopterFirstName(Update update) {
+        long chatId = update.message().chat().id();
+        Adopter adopter = adopterRepository.findByChatId(chatId);
+        @NotNull String firstName = update.message().text();
+            adopter.setFirstName(firstName);
+            adopterRepository.save(adopter);
+            SendMessage savedFirstName = new SendMessage(chatId, SAVED_FIRST_NAME);
+            sendMessage(savedFirstName);
+        }
+
+    private void saveAdopterLastName(Update update) {
+        long chatId = update.message().chat().id();
+        Adopter adopter = adopterRepository.findByChatId(chatId);
+        @NotNull String lastName = update.message().text();
+        adopter.setLastName(lastName);
+        adopterRepository.save(adopter);
+        SendMessage savedLastName = new SendMessage(chatId, SAVED_LAST_NAME);
+        sendMessage(savedLastName);
+    }
+
+    private void saveAdopterPassport(Update update) {
+        long chatId = update.message().chat().id();
+        Adopter adopter = adopterRepository.findByChatId(chatId);
+        @NotNull String passport = update.message().text();
+        passport.replaceAll("\\D+", "");
+        adopter.setPassport(passport);
+        adopterRepository.save(adopter);
+        SendMessage savedPassport = new SendMessage(chatId, SAVED_PASSPORT);
+        sendMessage(savedPassport);
+    }
+
+    private void saveAdopterAge(Update update) {
+        long chatId = update.message().chat().id();
+        Adopter adopter = adopterRepository.findByChatId(chatId);
+        @NotNull int age = Integer.parseInt(update.message().text());
+        adopter.setAge(age);
+        adopterRepository.save(adopter);
+        SendMessage savedAge = new SendMessage(chatId, SAVED_AGE);
+        sendMessage(savedAge);
+    }
+
+    private void saveAdopterPhone(Update update) {
+        long chatId = update.message().chat().id();
+        Adopter adopter = adopterRepository.findByChatId(chatId);
+        @NotNull String phone = update.message().text();
+        adopter.setPhone1(phone);
+        adopterRepository.save(adopter);
+        SendMessage savedPhone = new SendMessage(chatId, SAVED_PHONE);
+        sendMessage(savedPhone);
+    }
+
+    private void saveAdopterEmail(Update update) {
+        long chatId = update.message().chat().id();
+        Adopter adopter = adopterRepository.findByChatId(chatId);
+        @NotNull String mail = update.message().text();
+        Pattern patternEmail = Pattern.compile(EMAIL_PATTERN);
+        Matcher matcher = patternEmail.matcher(mail);
+        if (matcher.matches()) {
+            adopter.setEmail(mail);
+            adopterRepository.save(adopter);
+            SendMessage mailOk = new SendMessage(chatId, SAVED_EMAIL);
+            sendMessage(mailOk);
+        } else {
+            SendMessage wrongMail = new SendMessage(chatId, WRONG_EMAIL);
+            sendMessage(wrongMail);
+            adopterStatus = AdopterStatus.WAITING_FOR_ADOPTER_EMAIL;
+            return;
+           }
+
+    }
+
+    private void saveAdopterPet(Update update) {
+        long chatId = update.message().chat().id();
+        Adopter adopter = adopterRepository.findByChatId(chatId);
+        @NotNull long petId = Long.parseLong(update.message().text());
+        if (!checkSelectedPetId(petId).isEmpty()) {
+            Pet selectedPet = petRepository.getById(petId);
+            adopter.setPetId(selectedPet);
+            adopterRepository.save(adopter);
+            SendMessage successfulAdopter = new SendMessage(chatId, SUCCESSFUL_ADOPTER + adopter.getId());
+            sendMessage(successfulAdopter);
+            selectedPet.setAdopterId(adopter.getId());
+            petRepository.save(selectedPet);
+        } else {
+            SendMessage petNotAvailable = new SendMessage(chatId, WRONG_PET);
+            sendMessage(petNotAvailable);
+        }
+
     }
 
     private void savePetReport(long chatId) {
@@ -264,7 +420,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
 
 
-    /**
+     /**
      * Process icon clicks from guests.
      *
      * @param update shelter guest input (icon click, etc.)
@@ -285,8 +441,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 case CLICKED_ICON_SHELTER_INFO_TEXT -> sendMessageOnIconClick(chatId,branchService.findBranchById(1).getName() + ICON_WAVE + ICON_SMILE ); // краткая информация о приюте
                 case CLICKED_ICON_SHELTER_CONTACT_DETAILS -> sendMessageOnIconClick(chatId,branchService.findBranchById(1).getCountry() + ", " + branchService.findBranchById(1).getCity() + ", " + branchService.findBranchById(1).getZip() + ", " + branchService.findBranchById(1).getAddress() + ", работаем: " + branchService.findBranchById(1).getWorkHours()); // контактная информация
                 case CLICKED_ICON_SAFETY_SHELTER_RULES -> sendMessageOnIconClick(chatId,CLICKED_ICON_SAFETY_SHELTER_RULES + " " + branchService.findBranchById(1).getInfo());// правила приюта
-                case CLICKED_ICON_LEAVE_CONTACT_DETAILS -> {sendMessageOnIconClick(chatId,CLICKED_ICON_LEAVE_CONTACT_DETAILS);
-                    leaveContactDetails(update);}// оставить контактные данные
+                case CLICKED_ICON_LEAVE_CONTACT_DETAILS ->
+                    leaveContactDetails(update);// оставить контактные данные
                 // запрос информации о питомце - Этап 2
                 case ACTION_STAGE2_ICON_CLICKED -> createButtonsStage2(chatId);
                 // отработка нажатий кнопок по запросу информации о приюте - Этап 2
@@ -294,8 +450,13 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 case CLICKED_ICON_PETS_SELECT_DOG -> {
                     sendMessageOnIconClick(chatId, CLICKED_ICON_PETS_SELECT_DOG + ICON_DOG);
                     printAllVacantPets(chatId);
-                    sendPhotoOnIconClick(chatId, petAvatarService.findPetAvatar(4).getData());
-                }
+                    createButtonSelectDogAndBecomeAdopter(chatId);
+                    }
+                case CLICKED_ICON_BECOME_ADOPTER_INSTRUCTIONS -> {SendMessage instructionsBecomeAdopter = new SendMessage(chatId, ADOPTER_SAVE_INSTRUCTION);
+                    sendMessage(instructionsBecomeAdopter);}
+                case CLICKED_ICON_ENTER_ADOPTER_DETAILS -> {adopterStatus = AdopterStatus.WAITING_FOR_ADOPTER_FIRST_NAME;
+                    saveEmptyAdopter(chatId);}
+
                 case CLICKED_ICON_PETS_SELECT_CAT -> sendMessageOnIconClick(chatId, CLICKED_ICON_PETS_SELECT_CAT+ ICON_CAT);
                 case CLICKED_ICON_PETS_GET_TO_KNOW_RULES -> sendMessageOnIconClick(chatId,CLICKED_ICON_PETS_GET_TO_KNOW_RULES + ": " + serviceTableRepository.getMeetPetRules());
                 case CLICKED_ICON_PETS_DOCS_SET -> sendMessageOnIconClick(chatId,CLICKED_ICON_PETS_DOCS_SET + ": " + serviceTableRepository.getAdoptionDocs());
@@ -341,8 +502,14 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     }
 
     private void createButtonsStage3(long chatId) {
-        SendMessage message = new SendMessage(chatId, ACTION_STAGE2_ICON_CLICKED);
+        SendMessage message = new SendMessage(chatId, ACTION_STAGE3_ICON_CLICKED);
         message.replyMarkup(createIconsStage3());
+        sendMessage(message);
+    }
+
+    private void createButtonSelectDogAndBecomeAdopter(long chatId) {
+        SendMessage message = new SendMessage(chatId,CLICKED_ICON_SELECT_DOG_AND_BECOME_ADOPTER + "?");
+        message.replyMarkup(createIconsBecomeAdaptor());
         sendMessage(message);
     }
 
@@ -360,6 +527,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         sendMessage(message);
     }
 
+
     private void printAllVacantPets(long chatId) {
         List<Pet> vacantPets = petRepository.findVacantPet();
         for (Pet vacantPet : vacantPets) {
@@ -368,7 +536,16 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             sendMessage(message);
             sendPhotoOnIconClick(chatId, petAvatarService.findPetAvatar(petAvatar).getData());
         }
+
     }
+        private List<Long> checkSelectedPetId(long petId) {
+        return petRepository.findVacantPet().stream()
+                .map(Pet::getId)
+                .filter(p -> p.equals(petId))
+                .collect(Collectors.toList());
+    }
+
+
 
     // Создаем кнопки меню
 
@@ -411,7 +588,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         inlineKeyboardMarkup.addRow(new InlineKeyboardButton(ICON_PETS_SPECIALIST_ADVICE).callbackData(CLICKED_ICON_PETS_SPECIALIST_ADVICE));
         inlineKeyboardMarkup.addRow(new InlineKeyboardButton(ICON_PETS_SPECIALIST_CONTACTS).callbackData(CLICKED_ICON_PETS_SPECIALIST_CONTACTS));
         inlineKeyboardMarkup.addRow(new InlineKeyboardButton(ICON_PETS_REFUSAL_REASONS).callbackData(CLICKED_ICON_PETS_REFUSAL_REASONS));
-        inlineKeyboardMarkup.addRow(new InlineKeyboardButton(ICON_SELECT_PETS).callbackData(CLICKED_ICON_SELECT_PETS));
+        inlineKeyboardMarkup.addRow(new InlineKeyboardButton(ICON_SELECT_DOG_AND_BECOME_ADOPTER).callbackData(CLICKED_ICON_SELECT_DOG_AND_BECOME_ADOPTER));
         inlineKeyboardMarkup.addRow(new InlineKeyboardButton(ICON_ADOPTER_DETAILS).callbackData(CLICKED_ICON_ADOPTER_DETAILS));
         inlineKeyboardMarkup.addRow(new InlineKeyboardButton(ICON_VOLUNTEER_TEXT).callbackData(ACTION_VOLUNTEER_ICON_CLICKED));
         return inlineKeyboardMarkup;
@@ -424,6 +601,15 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         return inlineKeyboardMarkup;
     }
 
+
+    private InlineKeyboardMarkup createIconsBecomeAdaptor() {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.addRow(new InlineKeyboardButton(ICON_BECOME_ADOPTER_INSTRUCTIONS).callbackData(CLICKED_ICON_BECOME_ADOPTER_INSTRUCTIONS));
+        inlineKeyboardMarkup.addRow(new InlineKeyboardButton(ICON_ENTER_ADOPTER_DETAILS).callbackData(CLICKED_ICON_ENTER_ADOPTER_DETAILS));
+        return inlineKeyboardMarkup;
+    }
+
+
     private ReplyKeyboardMarkup createLeaveContactDetailsKeyboardButton() {
         KeyboardButton keyboardButton = new KeyboardButton(BUTTON_SHARE_CONTACT_DETAILS);
         keyboardButton.requestContact(true);
@@ -431,7 +617,5 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         replyKeyboardMarkup.resizeKeyboard(true);
         return replyKeyboardMarkup;
     }
-
-
 
 }

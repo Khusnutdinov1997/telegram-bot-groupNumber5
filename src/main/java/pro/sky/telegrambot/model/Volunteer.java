@@ -12,7 +12,7 @@ import java.util.Objects;
 public class Volunteer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     private String name;
     private String telegramId;
     private byte[] photo;
@@ -20,18 +20,18 @@ public class Volunteer {
     public Volunteer() {
     }
 
-    public Volunteer(long id, String name, String telegramId, byte[] photo) {
+    public Volunteer(Long id, String name, String telegramId, byte[] photo) {
         this.id = id;
         this.name = name;
         this.telegramId = telegramId;
         this.photo = photo;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

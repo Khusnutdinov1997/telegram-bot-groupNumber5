@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS adopter
     phone1 VARCHAR,
     email VARCHAR,
     chat_id BIGINT,
-    volunteer_id INT,
+    pet_id BIGINT,
     on_probation BOOL,
     active BOOL
 );
@@ -71,12 +71,12 @@ CREATE TABLE IF NOT EXISTS pet
     nick_name   VARCHAR,
     pet_type    INT,
     pet_color   INT,
-    avatar_id BIGINT,
-    adopter_id	BIGINT
+    avatar_id    BIGINT,
+    adopter_id   BIGINT
 
 );
 
-CREATE TABLE service_level2 (
+CREATE TABLE  IF NOT EXISTS service_level2 (
                               branch_id BIGSERIAL,
                               meet_pet TEXT,
                               adoption_docs TEXT,
