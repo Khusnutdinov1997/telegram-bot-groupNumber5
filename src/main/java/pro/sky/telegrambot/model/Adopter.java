@@ -119,6 +119,7 @@ public class Adopter {
         this.chatId = chatId;
     }
 
+
     public Pet getPetId() {
         return pet;
     }

@@ -1,11 +1,17 @@
 package pro.sky.telegrambot.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.Hibernate;
 import pro.sky.telegrambot.constants.PetColor;
 import pro.sky.telegrambot.constants.PetType;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @NoArgsConstructor
@@ -74,6 +80,7 @@ public class Pet {
     public long getAdopterId() {
         return adopterId;
     }
+
 
     public void setAdopterId(long adopterId) {
         this.adopterId = adopterId;

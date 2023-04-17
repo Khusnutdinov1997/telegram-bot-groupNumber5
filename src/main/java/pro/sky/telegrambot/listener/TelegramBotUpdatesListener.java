@@ -29,8 +29,8 @@ import pro.sky.telegrambot.model.PetReport;
 import pro.sky.telegrambot.repository.*;
 import pro.sky.telegrambot.service.BranchService;
 import pro.sky.telegrambot.service.PetAvatarService;
-
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -56,8 +56,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         return reportStatus;
     }
 
-
-
     private TelegramBot telegramBot;
     private final VolunteerRepository volunteerRepository;
     private final AdopterRepository adopterRepository;
@@ -68,7 +66,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private final PetRepository petRepository;
 
     @Autowired
-    public TelegramBotUpdatesListener(TelegramBot telegramBot, VolunteerRepository volunteerRepository, AdopterRepository adopterRepository, GuestRepository guestRepository, ServiceTableRepository serviceTableRepository, PetReportRepository petReportRepository, PetRepository petRepository, BranchService branchService, PetAvatarService petAvatarService) {
+        public TelegramBotUpdatesListener(TelegramBot telegramBot, VolunteerRepository volunteerRepository, AdopterRepository adopterRepository, GuestRepository guestRepository, ServiceTableRepository serviceTableRepository, PetReportRepository petReportRepository, PetRepository petRepository, BranchService branchService, PetAvatarService petAvatarService) {
         this.telegramBot = telegramBot;
         this.volunteerRepository = volunteerRepository;
         this.adopterRepository = adopterRepository;
@@ -231,8 +229,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     }
 
-
-    private void saveAdopterFirstName(Update update) {
+    @Transactional
+    public void saveAdopterFirstName(Update update) {
         long chatId = update.message().chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId);
         @NotNull String firstName = update.message().text();
@@ -241,8 +239,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             SendMessage savedFirstName = new SendMessage(chatId, SAVED_FIRST_NAME);
             sendMessage(savedFirstName);
         }
-
-    private void saveAdopterLastName(Update update) {
+    @Transactional
+    public void saveAdopterLastName(Update update) {
         long chatId = update.message().chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId);
         @NotNull String lastName = update.message().text();
@@ -251,8 +249,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         SendMessage savedLastName = new SendMessage(chatId, SAVED_LAST_NAME);
         sendMessage(savedLastName);
     }
-
-    private void saveAdopterPassport(Update update) {
+    @Transactional
+    public void saveAdopterPassport(Update update) {
         long chatId = update.message().chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId);
         @NotNull String passport = update.message().text();
@@ -262,8 +260,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         SendMessage savedPassport = new SendMessage(chatId, SAVED_PASSPORT);
         sendMessage(savedPassport);
     }
-
-    private void saveAdopterAge(Update update) {
+    @Transactional
+    public void saveAdopterAge(Update update) {
         long chatId = update.message().chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId);
         @NotNull int age = Integer.parseInt(update.message().text());
@@ -272,8 +270,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         SendMessage savedAge = new SendMessage(chatId, SAVED_AGE);
         sendMessage(savedAge);
     }
-
-    private void saveAdopterPhone(Update update) {
+    @Transactional
+    public void saveAdopterPhone(Update update) {
         long chatId = update.message().chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId);
         @NotNull String phone = update.message().text();
@@ -282,8 +280,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         SendMessage savedPhone = new SendMessage(chatId, SAVED_PHONE);
         sendMessage(savedPhone);
     }
-
-    private void saveAdopterEmail(Update update) {
+    @Transactional
+    public void saveAdopterEmail(Update update) {
         long chatId = update.message().chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId);
         @NotNull String mail = update.message().text();
@@ -302,8 +300,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
            }
 
     }
-
-    private void saveAdopterPet(Update update) {
+    @Transactional
+    public void saveAdopterPet(Update update) {
         long chatId = update.message().chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId);
         @NotNull long petId = Long.parseLong(update.message().text());
@@ -322,7 +320,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     }
 
-    private void savePetReport(long chatId) {
+    public void savePetReport(long chatId) {
         Adopter adopterId = adopterRepository.findByChatId(chatId);
         LocalDate date = LocalDate.now();
 
@@ -340,7 +338,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     }
 
-    private void savePetReportPhoto(Update update) {
+    public void savePetReportPhoto(Update update) {
         long chatId = update.message().chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId);
         LocalDate date = LocalDate.now();
@@ -375,7 +373,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         return null;
     }
 
-    private void savePetReportDiet(Update update) {
+    public void savePetReportDiet(Update update) {
         long chatId = update.message().chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId);
         LocalDate date = LocalDate.now();
@@ -389,7 +387,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             sendMessage(saveDietMessage);
         }
     }
-    private void savePetReportLifeStatus(Update update) {
+    public void savePetReportLifeStatus(Update update) {
         long chatId = update.message().chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId);
         LocalDate date = LocalDate.now();
@@ -404,7 +402,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         }
     }
 
-    private void savePetReportBehavior(Update update) {
+    public void savePetReportBehavior(Update update) {
         long chatId = update.message().chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId);
         LocalDate date = LocalDate.now();
@@ -430,7 +428,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
      */
 
     // Нажатия кнопок всех этапов
-    private void processIconClick(Update update) {
+    @Transactional
+     public void processIconClick(Update update) {
         CallbackQuery callbackQuery = update.callbackQuery();
         if (callbackQuery != null) {
             long chatId = callbackQuery.message().chat().id();
