@@ -1,0 +1,13 @@
+{
+  "message": {
+    "contact": {
+      "first_name": "Иван",
+      "last_name": "Иванов",
+      "phone_number": "+79851234569"
+    },
+    "chat": {
+      "username": "@ivan_ivanov",
+      "id": 9876543210
+    }
+  }
+}

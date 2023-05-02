@@ -49,10 +49,10 @@ public class Constants {
 
 
 
-    public final static String SAVED_PHOTO_MESSAGE = "Фотография сохранена";
-    public final static String SAVED_DIET_MESSAGE = "Рацион сохранен";
-    public final static String SAVED_LIFE_STATUS_MESSAGE = "Самочувствие сохранено";
-    public final static String SAVED_BEHAVIOR_MESSAGE = "Поведение сохранено";
+    public final static String SAVED_PHOTO_MESSAGE = "Фотография сохранена. Пожалуйста, введите рацион питомца";
+    public final static String SAVED_DIET_MESSAGE = "Рацион сохранен. Пожалуйста введите самочувствие питомца";
+    public final static String SAVED_LIFE_STATUS_MESSAGE = "Самочувствие сохранено. Пожалуйста опишите изменения в поведении питомца";
+    public final static String SAVED_BEHAVIOR_MESSAGE = "Поведение сохранено. Отчет сохранен за номером - ";
     public final static String PET_REPORT_INSTRUCTION = "При нажатии кнопки \"Отправить отчет о питомце\" Вам необходимо будет направить четыре сообщениями (одно за другим) \n " +
             "Первое сообщение - отправить фото питомца. \n" +
             "Второе сообщение - рацион питомца. \n" +
@@ -153,5 +153,10 @@ public class Constants {
     public final static String ICON_PETS_REPORT_INSTRUCTIONS_CLICKED = "Инструкции к отчету";
     public final static String ACTION_VOLUNTEER_ICON_CLICKED = "Волонтера позвали";
 
+    public final static String LOCALHOST_URL = "http://localhost:";
+    public final static String BRANCHPARAMS_URL = "/group5_petbot/params";
+    public final static String PET_URL = "/group5_petbot/pet";
+    public final static String VOLUNTEER_URL = "/group5_petbot/volunteer";
+    public final static String PET_REPORT_URL = "/group5_petbot/petreport";
 
 }

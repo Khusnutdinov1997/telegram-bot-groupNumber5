@@ -15,7 +15,7 @@ import pro.sky.telegrambot.service.PetService;
 import java.util.List;
 
 @RestController
-@RequestMapping("group5_petbot/pet")
+@RequestMapping("/group5_petbot/pet")
 
 
 public class PetController {
@@ -69,8 +69,12 @@ public class PetController {
             )
     )
     @PostMapping
-    public Pet createPet(@RequestBody Pet pet) {
-        return petService.createPet(pet);
+    public ResponseEntity<Pet> createPet(@RequestBody Pet pet) {
+        Pet petToCreate = petService.createPet(pet);
+        if (petToCreate == null) {
+            return ResponseEntity.internalServerError().build();
+        }
+        return ResponseEntity.ok(petToCreate);
     }
 
     @Operation(
@@ -95,8 +99,12 @@ public class PetController {
             )
     )
     @PutMapping
-    public Pet editPet(@RequestBody Pet pet) {
-        return petService.editPet(pet);
+    public ResponseEntity <Pet> editPet(@RequestBody Pet pet) {
+        Pet petToEdit = petService.editPet(pet);
+        if (petToEdit == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return  ResponseEntity.ok(petToEdit);
     }
 
         @Operation(

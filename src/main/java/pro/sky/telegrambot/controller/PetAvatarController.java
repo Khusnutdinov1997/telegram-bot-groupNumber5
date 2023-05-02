@@ -1,7 +1,6 @@
 package pro.sky.telegrambot.controller;
 
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +14,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
 
 @RestController
-@RequestMapping("group5_petbot/params")
+@RequestMapping("/group5_petbot/params")
 
 public class PetAvatarController {
 

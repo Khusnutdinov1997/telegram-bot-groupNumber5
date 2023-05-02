@@ -95,20 +95,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 String incomeMsgText = update.message().text();
 
                 long chatId = update.message().chat().id();
-                if (incomeMsgText.equals("/start")) {
-                    SendMessage message = new SendMessage(chatId, WELCOME_MESSAGE);
-                    // запомнить гостя
-                    long g_id = update.message().chat().id();
-                    int lastMenu = update.updateId();
-                    Guest guest = guestRepository.findByChatId(g_id);
-                    if (guest == null) {
-                        guest = new Guest(g_id, new Timestamp(System.currentTimeMillis()), lastMenu);
-                        guestRepository.save(guest);
-                    }
-                    // Добавляем кнопки
-                    message.replyMarkup(createIconsStage0());
-                    sendMessage(message);
-                }
 
                 if (adopterStatus == AdopterStatus.WAITING_FOR_ADOPTER_FIRST_NAME) {
                     saveAdopterFirstName(update);
@@ -177,6 +163,20 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     return;
                 }
 
+                if (incomeMsgText.equals("/start")) {
+                    SendMessage message = new SendMessage(chatId, WELCOME_MESSAGE);
+                    // запомнить гостя
+                    long g_id = update.message().chat().id();
+                    int lastMenu = update.updateId();
+                    Guest guest = guestRepository.findByChatId(g_id);
+                    if (guest == null) {
+                        guest = new Guest(g_id, new Timestamp(System.currentTimeMillis()), lastMenu);
+                        guestRepository.save(guest);
+                    }
+                    // Добавляем кнопки
+                    message.replyMarkup(createIconsStage0());
+                    sendMessage(message);
+                }
 
             }
             // Нажатия кнопок
@@ -217,7 +217,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         Adopter adopter = adopterRepository.findByChatId(chatId);
 
             if (adopter == null) {
-            adopter = new Adopter(null, null, null, 0, null, null, chatId, null, false, true);
+            adopter = new Adopter(null, null, null, null, 0, null, null, chatId, null, false, true);
             adopterRepository.save(adopter);
             SendMessage requestFirstName = new SendMessage(chatId, REQUEST_FIRST_NAME);
             sendMessage(requestFirstName);
@@ -319,14 +319,14 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         }
 
     }
-
+    @Transactional
     public void savePetReport(long chatId) {
         Adopter adopterId = adopterRepository.findByChatId(chatId);
         LocalDate date = LocalDate.now();
 
         PetReport petReport = petReportRepository.findPetReportByAdopterIdAndReportDate(adopterId, date);
         if (petReport == null) {
-            petReport = new PetReport(adopterId, date, null, null, null, null);
+            petReport = new PetReport(null, adopterId, date, null, null, null, null);
             petReportRepository.save(petReport);
             SendMessage requestPhotoMessage = new SendMessage(chatId, LOAD_PHOTO_MESSAGE);
             sendMessage(requestPhotoMessage);
@@ -337,7 +337,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         }
 
     }
-
+    @Transactional
     public void savePetReportPhoto(Update update) {
         long chatId = update.message().chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId);
@@ -351,7 +351,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             sendMessage(savedPhotoMessage);
         }
     }
-
+    @Transactional
     public byte[] getPhoto(Update update) {
         if (update.message().photo() != null) {
             PhotoSize[] photoSizes = update.message().photo();
@@ -362,8 +362,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     File file = getFileResponse.file();
                     String extension = StringUtils.getFilenameExtension(file.filePath());
                     try {
-                        byte[] image = telegramBot.getFileContent(file);
-                        return image;
+                        return telegramBot.getFileContent(file);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -372,7 +371,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         }
         return null;
     }
-
+    @Transactional
     public void savePetReportDiet(Update update) {
         long chatId = update.message().chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId);
@@ -387,6 +386,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             sendMessage(saveDietMessage);
         }
     }
+    @Transactional
     public void savePetReportLifeStatus(Update update) {
         long chatId = update.message().chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId);
@@ -402,6 +402,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         }
     }
 
+    @Transactional
     public void savePetReportBehavior(Update update) {
         long chatId = update.message().chat().id();
         Adopter adopter = adopterRepository.findByChatId(chatId);
@@ -412,7 +413,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             String newBehavior = update.message().text();
             petReport.setBehavior(newBehavior);
             petReportRepository.save(petReport);
-            SendMessage saveBehaviorMessage = new SendMessage(chatId, SAVED_BEHAVIOR_MESSAGE);
+            SendMessage saveBehaviorMessage = new SendMessage(chatId, SAVED_BEHAVIOR_MESSAGE + petReport.getId());
             sendMessage(saveBehaviorMessage);
         }
     }
@@ -471,9 +472,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 // отработка нажатий кнопок по отправке отчета о питомце - Этап 3
                 case ICON_PETS_REPORT_INSTRUCTIONS_CLICKED -> {SendMessage instructionsForPetReport = new SendMessage(chatId, PET_REPORT_INSTRUCTION);
                 sendMessage(instructionsForPetReport);}
-                case CLICKED_ICON_PETS_REPORT_SEND -> {reportStatus = ReportStatus.WAITING_FOR_PET_PHOTO;
+                case CLICKED_ICON_PETS_REPORT_SEND -> {
+                    reportStatus = ReportStatus.WAITING_FOR_PET_PHOTO;
                     savePetReport(chatId);
-                }
+                    }
                 case ACTION_VOLUNTEER_ICON_CLICKED -> sendMessageOnIconClick(chatId, ACTION_VOLUNTEER_ICON_CLICKED); // позвать волонтера
             }
         }

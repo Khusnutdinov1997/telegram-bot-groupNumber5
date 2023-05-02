@@ -23,7 +23,8 @@ public class PetReport {
     public PetReport() {
     }
 
-    public PetReport(Adopter adopterId, LocalDate reportDate, byte[] photo, String diet, String lifeStatus, String behavior) {
+    public PetReport(Long id, Adopter adopterId, LocalDate reportDate, byte[] photo, String diet, String lifeStatus, String behavior) {
+        this.id = id;
         this.adopterId = adopterId;
         this.reportDate = reportDate;
         this.photo = photo;

@@ -11,7 +11,7 @@ import pro.sky.telegrambot.model.BranchParams;
 import pro.sky.telegrambot.service.BranchService;
 
 @RestController
-@RequestMapping("group5_petbot/params")
+@RequestMapping("/group5_petbot/params")
 
 
 public class BranchController {

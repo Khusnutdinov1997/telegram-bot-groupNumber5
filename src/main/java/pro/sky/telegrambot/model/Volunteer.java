@@ -17,14 +17,14 @@ public class Volunteer {
     private String telegramId;
     private byte[] photo;
 
-    public Volunteer() {
-    }
-
-    public Volunteer(Long id, String name, String telegramId, byte[] photo) {
-        this.id = id;
+    public Volunteer(Long volunteer, String name, String telegramId, byte[] photo) {
+        this.id = volunteer;
         this.name = name;
         this.telegramId = telegramId;
         this.photo = photo;
+    }
+
+    public Volunteer() {
     }
 
     public Long getId() {

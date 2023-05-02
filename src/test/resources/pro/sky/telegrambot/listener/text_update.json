@@ -1,0 +1,13 @@
+{
+  "message": {
+    "chat": {
+      "id": 1234567890
+    },
+    "from": {
+      "id": 1234567890
+    },
+    "text": "%message_text%"
+  },
+  "update_id": 683226650
+}
+

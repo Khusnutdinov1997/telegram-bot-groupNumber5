@@ -24,7 +24,8 @@ public class Adopter {
     private boolean active;
 
 
-    public Adopter(String firstName, String lastName, String passport, int age, String phone1, String email, long chatId, Pet pet, boolean onProbation, boolean active) {
+    public Adopter(Long id,String firstName, String lastName, String passport, int age, String phone1, String email, long chatId, Pet pet, boolean onProbation, boolean active) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.passport = passport;

@@ -1,0 +1,13 @@
+{
+  "callback_query": {
+    "message": {
+      "chat": {
+        "id": 1234567890
+      }
+    },
+    "from": {
+      "id": 9876543210
+    },
+    "data": "%message_text%"
+  }
+}

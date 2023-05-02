@@ -1,0 +1,14 @@
+{
+  "callback_query": {
+    "message": {
+      "chat": {
+        "id": 1234567890
+      }
+    },
+    "from": {
+      "id": 9876543210,
+      "username": "ivanivanov"
+    },
+    "data": "%message_text%"
+  }
+}

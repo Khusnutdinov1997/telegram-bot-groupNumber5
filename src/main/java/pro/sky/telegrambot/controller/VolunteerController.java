@@ -7,12 +7,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.telegrambot.model.Volunteer;
 import pro.sky.telegrambot.service.VolunteerService;
 
 @RestController
-@RequestMapping("group5_petbot/volunteer")
+@RequestMapping("/group5_petbot/volunteer")
+//@ResponseBody
 
 public class VolunteerController {
 
@@ -72,9 +74,13 @@ public class VolunteerController {
     )
 
     @PostMapping
-    public Volunteer createVolunteer(@RequestBody Volunteer volunteer) {
-        return volunteerService.createVolunteer(volunteer);
-    }
+    public ResponseEntity<Volunteer> createVolunteer(@RequestBody Volunteer volunteer) {
+        Volunteer volunteerToCreate = volunteerService.createVolunteer(volunteer);
+        if (volunteerToCreate == null) {
+            return ResponseEntity.internalServerError().build();
+        }
+        return ResponseEntity.ok(volunteerToCreate);
+        }
 
     @Operation(
             summary = "Редактирование волонтера",
@@ -99,8 +105,12 @@ public class VolunteerController {
     )
 
     @PutMapping("{id}")
-    public Volunteer editVolunteer(@Parameter(description = "id волонтера", example = "1")@PathVariable Integer id) {
-        return volunteerService.editVolunteer(id);
+    public ResponseEntity<Volunteer> editVolunteer(@Parameter(description = "id волонтера", example = "1")@RequestBody Volunteer volunteer) {
+        Volunteer volunteerToEdit = volunteerService.editVolunteer(volunteer);
+        if (volunteerToEdit == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return  ResponseEntity.ok(volunteerToEdit);
     }
 
 }

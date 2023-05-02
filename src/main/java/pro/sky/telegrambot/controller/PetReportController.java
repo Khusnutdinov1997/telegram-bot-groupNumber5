@@ -1,10 +1,12 @@
 package pro.sky.telegrambot.controller;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.telegrambot.model.PetReport;
 import pro.sky.telegrambot.service.PetReportService;
 
 @RestController
+@RequestMapping("/group5_petbot/petreport")
 
 public class PetReportController {
 
@@ -14,15 +16,23 @@ public class PetReportController {
         this.petReportService = petReportService;
     }
 
-    @PostMapping("/createPetReport")
-    public PetReport createPetReport(@RequestBody PetReport petReport) {
-        return petReportService.createPetReport(petReport);
-    }
+    @PostMapping()
+    public ResponseEntity<PetReport> createPetReport(@RequestBody PetReport petReport) {
+        PetReport petReportToCreate = petReportService.createPetReport(petReport);
+        if (petReportToCreate == null) {
+            return ResponseEntity.internalServerError().build();
+        }
+        return ResponseEntity.ok(petReportToCreate);
+     }
 
     @PutMapping("{petReportId}")
-    public PetReport updatePetReport(@PathVariable long petReportId,
+    public ResponseEntity <PetReport> updatePetReport(@PathVariable long petReportId,
                                                @RequestBody PetReport petReport) {
-        return petReportService.updatePetReport(petReportId, petReport);
+        PetReport petReportToEdit = petReportService.updatePetReport(petReportId, petReport);
+        if (petReportToEdit == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return  ResponseEntity.ok(petReportToEdit);
     }
 
     @GetMapping("{petReportId}")

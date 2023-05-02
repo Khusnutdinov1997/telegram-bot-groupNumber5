@@ -28,12 +28,15 @@ public class VolunteerService {
     }
 
     public Volunteer createVolunteer(Volunteer volunteer) {
+        volunteer.setId(null);
         return volunteerRepository.save(volunteer);
     }
 
-    public Volunteer editVolunteer(long id) {
-        logger.debug("Calling method edit Volunteer (id = {})", id);
-        Volunteer volunteer = findVolunteer(id);
+
+    public Volunteer editVolunteer(Volunteer volunteer) {
+        if (volunteerRepository.findById(volunteer.getId()).orElse(null) == null) {
+            return null;
+        }
         return volunteerRepository.save(volunteer);
     }
 
